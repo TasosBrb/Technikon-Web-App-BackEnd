@@ -1,15 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.team04.technikon.dto;
 
-/**
- *
- * @author ADMIN
- */
-public class RestApiResult<T>{
-    
+public class RestApiResult<T> {
+
     private T data;
     private int errorCode;
     private String description;
@@ -43,9 +35,5 @@ public class RestApiResult<T>{
     public void setDescription(String description) {
         this.description = description;
     }
-    
-    
-    
-    
-    
+
 }

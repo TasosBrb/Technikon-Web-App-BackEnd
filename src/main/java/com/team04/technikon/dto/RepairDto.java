@@ -1,12 +1,11 @@
 package com.team04.technikon.dto;
 
 import com.team04.technikon.enums.RepairStatus;
-import com.team04.technikon.model.Repair;
 import com.team04.technikon.enums.RepairType;
+import com.team04.technikon.model.Repair;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -14,16 +13,17 @@ public class RepairDto {
 
     private RepairType repairType;
     private String repairDescription;
-    private LocalDate submissionDate;
+    private String submissionDate;
     private String workDescription;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private String startDate;
+    private String endDate;
     private double cost;
     private boolean acceptance;
     private RepairStatus repairStatus;
-    private LocalDate actualStartDate;
-    private LocalDate actualEndDate;
+    private String actualStartDate;
+    private String actualEndDate;
     private PropertyDto property;
+    
 
     public RepairDto(Repair repair) {
 
@@ -38,6 +38,7 @@ public class RepairDto {
         this.actualStartDate = repair.getActualStartDate();
         this.actualEndDate = repair.getActualEndDate();
     }
+    
 
     public Repair asRepair() {
         Repair repair = new Repair();

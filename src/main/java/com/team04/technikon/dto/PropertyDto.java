@@ -11,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class PropertyDto {
 
+    private int id;
     private int e9;
     private String address;
     private String yearOfConstruction;
@@ -18,7 +19,9 @@ public class PropertyDto {
     private PropertyOwnerDto owner;
     private List<RepairDto> repairs;
 
-    public PropertyDto(int e9, String address, String yearOfConstruction, PropertyType propertyType, PropertyOwnerDto owner, List<RepairDto> repairs) {
+    
+    public PropertyDto(int id, int e9, String address, String yearOfConstruction, PropertyType propertyType, PropertyOwnerDto owner, List<RepairDto> repairs) {
+        this.id = id;
         this.e9 = e9;
         this.address = address;
         this.yearOfConstruction = yearOfConstruction;
@@ -27,8 +30,19 @@ public class PropertyDto {
         this.repairs = repairs;
     }
 
+    
+    public PropertyDto(Property property) {
+        this.id = property.getId();
+        this.e9 = property.getE9();
+        this.address = property.getAddress();
+        this.yearOfConstruction = property.getYearOfConstruction();
+        this.propertyType = property.getPropertyType();
+    }
+
+    
     public Property asProperty() {
         Property property = new Property();
+        property.setId(id);
         property.setE9(e9);
         property.setAddress(address);
         property.setYearOfConstruction(yearOfConstruction);

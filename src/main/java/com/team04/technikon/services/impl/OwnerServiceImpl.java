@@ -1,5 +1,9 @@
 package com.team04.technikon.services.impl;
 
+import com.team04.technikon.dto.PropertyDto;
+import com.team04.technikon.dto.PropertyOwnerDto;
+import com.team04.technikon.dto.RepairDto;
+import com.team04.technikon.dto.RestApiResult;
 import com.team04.technikon.enums.PropertyType;
 import com.team04.technikon.enums.RepairStatus;
 import com.team04.technikon.enums.RepairType;
@@ -12,20 +16,24 @@ import com.team04.technikon.repository.PropertyOwnerRepository;
 import com.team04.technikon.repository.PropertyRepository;
 import com.team04.technikon.repository.RepairRepository;
 import com.team04.technikon.services.OwnerService;
-import java.io.IOError;
-import java.io.IOException;
-import java.io.InputStream;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Properties;
-import java.util.Scanner;
 import com.team04.technikon.util.JpaUtil;
+import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Tuple;
 import jakarta.persistence.TypedQuery;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOError;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Properties;
+import java.util.Scanner;
+
+@Stateless
 public class OwnerServiceImpl implements OwnerService {
 
     private final Properties sqlCommands = new Properties();
@@ -48,6 +56,9 @@ public class OwnerServiceImpl implements OwnerService {
 
     @Inject
     private RepairRepository repairRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public PropertyOwner getOwnerFromConsole() {
@@ -118,15 +129,15 @@ public class OwnerServiceImpl implements OwnerService {
         repair.setProperty(property);
         repair.setRepairType(RepairType.valueOf(repairDetailsSplit[0].trim().toUpperCase()));
         repair.setRepairDescription(repairDetailsSplit[1].trim());
-        repair.setSubmissionDate(LocalDate.parse(repairDetailsSplit[2]));
+        repair.setSubmissionDate(repairDetailsSplit[2].trim());
         repair.setWorkDescription(repairDetailsSplit[3].trim());
-        repair.setStartDate(LocalDate.parse(repairDetailsSplit[4].trim()));
-        repair.setEndDate(LocalDate.parse(repairDetailsSplit[5].trim()));
+        repair.setStartDate(repairDetailsSplit[4].trim());
+        repair.setEndDate(repairDetailsSplit[5].trim());
         repair.setCost(Double.parseDouble(repairDetailsSplit[6].trim()));
         repair.setAcceptance(Boolean.parseBoolean(repairDetailsSplit[7].trim()));
         repair.setRepairStatus(RepairStatus.valueOf(repairDetailsSplit[8].trim().toUpperCase()));
-        repair.setActualStartDate(LocalDate.parse(repairDetailsSplit[9].trim()));
-        repair.setActualEndDate(LocalDate.parse(repairDetailsSplit[10].trim()));
+        repair.setActualStartDate(repairDetailsSplit[9].trim());
+        repair.setActualEndDate(repairDetailsSplit[10].trim());
         return repair;
     }
 
@@ -179,4 +190,137 @@ public class OwnerServiceImpl implements OwnerService {
     public void declineRepair(Repair repair) {
         repairRepository.updateAcceptance(repair.getId(), false);
     }
+
+    
+     //Rest API methods
+    
+    @Override
+    public void createPropertyOwner(PropertyOwnerDto ownerDto) {
+        propertyOwnerRepository.createPropertyOwner(ownerDto.asOwner());
+    }
+
+    @Override
+    public RestApiResult<PropertyOwnerDto> getOwner(int ownerId) {
+        PropertyOwnerDto ownerDto = new PropertyOwnerDto(propertyOwnerRepository.findById(ownerId));
+        return new RestApiResult<PropertyOwnerDto>(ownerDto, 0, "successful");
+    }
+
+    @Override
+    public RestApiResult<PropertyOwnerDto> getOwnerByVat(int vat) {
+        PropertyOwnerDto ownerDto = new PropertyOwnerDto(propertyOwnerRepository.findByVat(vat));
+        return new RestApiResult<PropertyOwnerDto>(ownerDto, 0, "successful");
+    }
+
+    @Override
+    public RestApiResult<PropertyOwnerDto> getOwnerByEmail(String email) {
+            PropertyOwnerDto ownerDto = new PropertyOwnerDto(propertyOwnerRepository.findByEmail(email));
+        return new RestApiResult<PropertyOwnerDto>(ownerDto, 0, "successful");
+    }
+
+    @Override
+    public RestApiResult<PropertyDto> getProperty(int propertyId) {
+        PropertyDto propertyDto = new PropertyDto(propertyRepository.findById(propertyId));
+        return new RestApiResult<PropertyDto>(propertyDto, 0, "successful");
+    }
+
+    @Override
+    public RestApiResult<RepairDto> getRepair(int repairId) {
+        RepairDto repairDto = new RepairDto(repairRepository.findById(repairId));
+        return new RestApiResult<RepairDto>(repairDto, 0, "successful");
+    }
+
+    @Override
+    public void registerNewPropertyDto(PropertyDto propertyDto) {
+        propertyRepository.create(propertyDto.asProperty());
+    }
+
+    @Override
+    public boolean deletePropertyOwner(int ownerId) {
+        return propertyOwnerRepository.deleteOwner(ownerId);
+    }
+
+    @Override
+    public boolean deleteRepair(int repairId) {
+        return repairRepository.deleteRepair(repairId);
+    }
+
+    @Override
+    public boolean deleteProperty(int id) {
+        propertyRepository.removeProperty(id);
+        return true;
+    }
+
+    @Override
+    public void createRepair(RepairDto repair) {
+        repairRepository.create(repair.asRepair());
+    }
+
+    @Override
+    public RestApiResult<PropertyOwnerDto> updateOwner(PropertyOwnerDto propertyOwnerDto, int id) {
+        try {
+            PropertyOwner ownerToUpdate = propertyOwnerRepository.findById(id);
+            ownerToUpdate.setVat(propertyOwnerDto.getVat());
+            ownerToUpdate.setName(propertyOwnerDto.getName());
+            ownerToUpdate.setSurname(propertyOwnerDto.getSurname());
+            ownerToUpdate.setAddress(propertyOwnerDto.getAddress());
+            ownerToUpdate.setPhoneNumber(propertyOwnerDto.getPhoneNumber());
+            ownerToUpdate.setEmail(propertyOwnerDto.getEmail());
+            ownerToUpdate.setUsername(propertyOwnerDto.getUsername());
+            ownerToUpdate.setPassword(propertyOwnerDto.getPassword());
+            entityManager.getTransaction().begin();
+            entityManager.merge(ownerToUpdate);
+            entityManager.getTransaction().commit();
+            return new RestApiResult<PropertyOwnerDto>(propertyOwnerDto, 0, "successful");
+        } catch (Exception e) {
+            return new RestApiResult<PropertyOwnerDto>(propertyOwnerDto, 0, "successful");
+
+        }
+
+    }
+
+    @Override
+    public RestApiResult<PropertyDto> updateProperty(PropertyDto propertyDto, int id) {
+        try {
+            Property propertyToUpdate = propertyRepository.findById(id);
+            propertyToUpdate.setE9(propertyDto.getE9());
+            propertyToUpdate.setAddress(propertyDto.getAddress());
+            propertyToUpdate.setYearOfConstruction(propertyDto.getYearOfConstruction());
+            propertyToUpdate.setPropertyType(propertyDto.getPropertyType());
+            entityManager.getTransaction().begin();
+            entityManager.merge(propertyToUpdate);
+            entityManager.getTransaction().commit();
+            return new RestApiResult<PropertyDto>(propertyDto, 0, "successful");
+        } catch (Exception e) {
+            return new RestApiResult<PropertyDto>(propertyDto, 0, "successful");
+
+        }
+
+    }
+
+    @Override
+    public RestApiResult<RepairDto> updateRepair(RepairDto repairDto, int id) {
+        try {
+            Repair repairToUpdate = repairRepository.findById(id);
+            repairToUpdate.setRepairType(repairDto.getRepairType());
+            repairToUpdate.setRepairDescription(repairDto.getRepairDescription());
+            repairToUpdate.setSubmissionDate(repairDto.getSubmissionDate());
+            repairToUpdate.setWorkDescription(repairDto.getWorkDescription());
+            repairToUpdate.setStartDate(repairDto.getStartDate());
+            repairToUpdate.setEndDate(repairDto.getEndDate());
+            repairToUpdate.setCost(repairDto.getCost());
+            repairToUpdate.setRepairStatus(repairDto.getRepairStatus());
+            repairToUpdate.setActualStartDate(repairDto.getActualStartDate());
+            repairToUpdate.setActualEndDate(repairDto.getActualEndDate());
+            entityManager.getTransaction().begin();
+            entityManager.merge(repairToUpdate);
+            entityManager.getTransaction().commit();
+            return new RestApiResult<RepairDto>(repairDto, 0, "successful");
+
+        } catch (Exception e) {
+            return new RestApiResult<RepairDto>(repairDto, 0, "successful");
+
+        }
+
+    }
+
 }

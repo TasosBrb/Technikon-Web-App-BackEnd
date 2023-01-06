@@ -1,24 +1,35 @@
 package com.team04.technikon.repository;
 
 import com.team04.technikon.model.PropertyOwner;
+
 import java.util.List;
 
 public interface PropertyOwnerRepository extends Repository<PropertyOwner> {
 
-  PropertyOwner search(int id);
+    PropertyOwner search(int id);
 
-  PropertyOwner search(String email);
+    PropertyOwner search(String email);
+    
+    PropertyOwner findById(int id);
 
-  void updateAddress(int id, String address);
+    PropertyOwner findByVat(int vat);
 
-  void updateEmail(int id, String email);
+    PropertyOwner findByEmail(String email);
 
-  void updatePassword(int id, String password);
+    void updateAddress(int id, String address);
 
-  boolean delete(int id);
+    void updateEmail(int id, String email);
 
-  List<PropertyOwner> read(String ownerName);
+    void updatePassword(int id, String password);
 
-  List<PropertyOwner> readAll();
+    boolean delete(int id);
+
+    List<PropertyOwner> read(String ownerName);
+
+    List<PropertyOwner> readAll();
+
+    void createPropertyOwner(PropertyOwner propertyOwner);
+  
+    boolean deleteOwner(int id);
 
 }

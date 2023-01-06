@@ -26,7 +26,6 @@ public class Repair extends PersistentClass {
   private String endDate;
   private double cost;
   private boolean acceptance;
-  
   @Enumerated(EnumType.STRING)
   private RepairStatus repairStatus;
   
@@ -41,6 +40,6 @@ public class Repair extends PersistentClass {
     this.acceptance = acceptance;
     this.repairStatus = repairStatus;
 
+    
   }
-
 }

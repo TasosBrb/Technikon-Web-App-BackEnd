@@ -6,11 +6,11 @@ import com.team04.technikon.model.Repair;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @NoArgsConstructor
 public class RepairDto {
 
+    private int id;
     private RepairType repairType;
     private String repairDescription;
     private String submissionDate;
@@ -23,10 +23,10 @@ public class RepairDto {
     private String actualStartDate;
     private String actualEndDate;
     private PropertyDto property;
-    
 
     public RepairDto(Repair repair) {
 
+        this.id = repair.getId();
         this.repairType = repair.getRepairType();
         this.repairDescription = repair.getRepairDescription();
         this.submissionDate = repair.getSubmissionDate();
@@ -38,10 +38,10 @@ public class RepairDto {
         this.actualStartDate = repair.getActualStartDate();
         this.actualEndDate = repair.getActualEndDate();
     }
-    
 
     public Repair asRepair() {
         Repair repair = new Repair();
+        repair.setId(id);
         repair.setRepairType(repairType);
         repair.setRepairDescription(repairDescription);
         repair.setSubmissionDate(submissionDate);

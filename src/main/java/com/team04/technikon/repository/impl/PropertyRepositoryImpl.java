@@ -192,5 +192,23 @@ public void updatePropertyType(int id, PropertyType propertyType) {
         finalValue.setPropertyType(initialValue.getPropertyType());
         finalValue.setYearOfConstruction(initialValue.getYearOfConstruction());
     }
+    
+    @Override
+    public List<Property> findAll() {
+        return entityManager.createQuery("select p from property p").getResultList();
+    }
+
+    @Override
+    public Property findbyE9(int e9) {
+        return entityManager.createQuery("SELECT p from property p where p.e9 =:e9", Property.class)
+                .setParameter("e9", e9).getSingleResult();
+    }
+
+    @Override
+    public List<Property> findbyE9List(int e9) {
+        return entityManager.createQuery("SELECT p FROM property p WHERE p.e9 = :e9", Property.class)
+                .setParameter("e9", e9)
+                .getResultList();
+    }
 
 }

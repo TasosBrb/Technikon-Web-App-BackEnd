@@ -1,40 +1,50 @@
 package com.team04.technikon.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
-import java.util.List;
 
 @Data
 @NoArgsConstructor
 @Entity(name = "propertyowner")
 @Table
 public class PropertyOwner extends PersistentClass {
-  
-  private int vat; 
-  private String name;
-  private String surname;
-  private String address;
-  private String phoneNumber;
-  private String email;
-  private String username;
-  private String password;
-  
-  @OneToMany(mappedBy = "owner", orphanRemoval = true)
-  private List<Property> properties;
 
-  public PropertyOwner(int vat, String name, String surname, String address, String phoneNumber, String email, String username, String password) {
-    this.vat = vat;
-    this.name = name;
-    this.surname = surname;
-    this.address = address;
-    this.phoneNumber = phoneNumber;
-    this.email = email;
-    this.username = username;
-    this.password = password;
-  }
+    @Column(unique = true)
+    private int vat;
+    private String name;
+    private String surname;
+    private String address;
+    private String phoneNumber;
+
+    @Column(unique = true)
+    private String email;
+    @Column(unique = true)
+    private String username;
+    private String password;
+    @OneToMany(mappedBy = "owner", orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Property> properties;
+
+    private String role;
+
+    public PropertyOwner(int vat, String name, String surname, String address, String phoneNumber, String email, String username, String password, String role) {
+        this.vat = vat;
+        this.name = name;
+        this.surname = surname;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
 
 }

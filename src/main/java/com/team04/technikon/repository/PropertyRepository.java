@@ -28,4 +28,10 @@ public interface PropertyRepository extends Repository<Property> {
     boolean removeProperty(int id);
 
     Property findById(int id);
+    
+    List<Property> findAll();
+
+    Property findbyE9(int e9);
+
+    List<Property> findbyE9List(int e9);
 }

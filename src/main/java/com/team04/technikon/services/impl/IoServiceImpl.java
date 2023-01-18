@@ -11,12 +11,11 @@ import com.team04.technikon.repository.RepairRepository;
 import com.team04.technikon.services.IoServices;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Stateless
 public class IoServiceImpl implements IoServices {
@@ -136,6 +135,7 @@ public class IoServiceImpl implements IoServices {
         String email;
         String username;
         String password;
+        String role;
         List<PropertyOwner> propertyOwners = new ArrayList<>();
         for (String[] temp : list) {
             vat = Integer.parseInt(temp[0]);
@@ -146,7 +146,8 @@ public class IoServiceImpl implements IoServices {
             email = temp[5];
             username = temp[6];
             password = temp[7];
-            propertyOwners.add(new PropertyOwner(vat, name, surname, address, phoneNumber, email, username, password));
+            role = temp[8];
+            propertyOwners.add(new PropertyOwner(vat, name, surname, address, phoneNumber, email, username, password,role));
             logger.info("The owner with VAT number {} has been loaded", vat);
         }
         return propertyOwners;

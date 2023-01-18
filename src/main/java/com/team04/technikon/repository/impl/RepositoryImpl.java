@@ -30,16 +30,17 @@ public abstract class RepositoryImpl<T extends PersistentClass> implements Repos
         entityManager.persist(t);
         return t.getId();
     }
-
+    
     @Override
-    public List<T> findAll() {
-        return entityManager.createQuery("from " + getClassName()).getResultList();
+    public T read(int id) {
+        return entityManager.find(findClass(), id);
     }
+
 
     @Override
     public Optional<T> searchById(int id) {
         T t = entityManager.find(findClass(), id);
-        return Optional.ofNullable(t);
+        return t != null ? Optional.of(t) : Optional.empty();
     }
 
     @Override
@@ -60,21 +61,22 @@ public abstract class RepositoryImpl<T extends PersistentClass> implements Repos
     }
 
     @Override
-    public Optional<T> update(int id, T t) {
-        T t0 = entityManager.find(findClass(), id);
-        if (t0 == null) {
-            return Optional.empty();
-        }
-        try {
+    public Optional<T> update(int id, T t1) {
+       try {
             userTransaction.begin();
-            updateFields(t0, t);
+            T t0 = entityManager.find(findClass(), id);
+            if (t0 == null) {
+                userTransaction.commit();
+                return Optional.empty();
+            }
+            updateFields(t0, t1);
             entityManager.persist(entityManager.contains(t0) ? t0 : entityManager.merge(t0));
             userTransaction.commit();
+            return Optional.of(t0);
         } catch (Exception e) {
             System.out.println(e.toString());
             return Optional.empty();
         }
-        return Optional.of(t0);
     }
 
 }

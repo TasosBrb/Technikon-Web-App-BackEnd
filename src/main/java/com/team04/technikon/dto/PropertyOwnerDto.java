@@ -17,8 +17,8 @@ public class PropertyOwnerDto {
     private String email;
     private String username;
     private String password;
+    private String role;
 
-    
     public PropertyOwnerDto(PropertyOwner propertyOwner) {
         this.id = propertyOwner.getId();
         this.vat = propertyOwner.getVat();
@@ -29,9 +29,9 @@ public class PropertyOwnerDto {
         this.email = propertyOwner.getEmail();
         this.username = propertyOwner.getUsername();
         this.password = propertyOwner.getPassword();
+        this.role = propertyOwner.getRole();
 
     }
-    
 
     public PropertyOwner asOwner() {
         PropertyOwner propertyOwner = new PropertyOwner();
@@ -44,6 +44,7 @@ public class PropertyOwnerDto {
         propertyOwner.setEmail(email);
         propertyOwner.setUsername(username);
         propertyOwner.setPassword(password);
+        propertyOwner.setRole(role);
         return propertyOwner;
 
     }

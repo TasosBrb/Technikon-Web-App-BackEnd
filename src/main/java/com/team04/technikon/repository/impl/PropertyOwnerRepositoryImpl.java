@@ -187,5 +187,38 @@ public class PropertyOwnerRepositoryImpl extends RepositoryImpl<PropertyOwner> i
         finalValue.setUsername(initialValue.getUsername());
         finalValue.setVat(initialValue.getVat());
     }
+    
+    @Override
+    public List<PropertyOwner> findAll() {
+        return entityManager.createQuery("select p from propertyowner p").getResultList();
+    }
+
+    @Override
+    public List<PropertyOwner> findUsernames(String username) {
+        return entityManager.createQuery("SELECT p FROM propertyowner p WHERE p.username = :username", PropertyOwner.class)
+                .setParameter("username", username)
+                .getResultList();
+    }
+
+    @Override
+    public String checkRole(String username, String password) {
+        try {
+            return entityManager.createQuery("SELECT p.role from propertyowner p where username=:u1 and password=:u2")
+                    .setParameter("u1", username)
+                    .setParameter("u2", password)
+                    .getSingleResult()
+                    .toString();
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    @Override
+    public PropertyOwner findByUNameAndPassword(String username, String password) {
+        return entityManager.createQuery("select u from propertyowner u where username=:u1 and password=:u2", PropertyOwner.class)
+                .setParameter("u1", username)
+                .setParameter("u2", password)
+                .getSingleResult();
+    }
 
 }

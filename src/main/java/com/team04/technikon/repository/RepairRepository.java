@@ -44,4 +44,9 @@ public interface RepairRepository extends Repository<Repair> {
 
     boolean deleteRepair(int id);
 
+    List<Repair> findAll();
+
+    List<Repair> findbyExactDate(String date);
+
+    List<Repair> findRepairsOfOwner(int id);
 }

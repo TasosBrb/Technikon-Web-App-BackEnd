@@ -13,6 +13,7 @@ import java.util.List;
 @Table
 public class Property extends PersistentClass {
 
+    @Column(unique = true)
     private int e9;
     private String address;
     private String yearOfConstruction;

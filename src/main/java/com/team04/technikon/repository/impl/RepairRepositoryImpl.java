@@ -3,6 +3,7 @@ package com.team04.technikon.repository.impl;
 import com.team04.technikon.enums.RepairStatus;
 import com.team04.technikon.enums.RepairType;
 import com.team04.technikon.model.Property;
+import com.team04.technikon.model.PropertyOwner;
 import com.team04.technikon.model.Repair;
 import com.team04.technikon.repository.RepairRepository;
 import com.team04.technikon.util.JpaUtil;
@@ -16,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOError;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -287,5 +289,29 @@ public class RepairRepositoryImpl extends RepositoryImpl<Repair> implements Repa
         tTarget.setRepairStatus(tSource.getRepairStatus());
         tTarget.setRepairType(tSource.getRepairType());
     }
+    
+    @Override
+    public List<Repair> findAll() {
+        return entityManager.createQuery("select r from repair r").getResultList();
+    }
+
+    @Override
+    public List<Repair> findbyExactDate(String date) {
+        return entityManager.createQuery("SELECT r FROM repair r WHERE r.submissionDate = :submissionDate", Repair.class)
+                .setParameter("submissionDate", date).getResultList();
+    }
+
+    @Override
+    @Transactional
+    public List<Repair> findRepairsOfOwner(int id) {
+        PropertyOwner propertyOwner = entityManager.find(PropertyOwner.class, id);
+        List<Property> properties = propertyOwner.getProperties();
+        List<Repair> repairs = new ArrayList<>();
+        for (Property property : properties) {
+            repairs.addAll(property.getRepairs());
+        }
+        return repairs;
+    }
+
 
 }

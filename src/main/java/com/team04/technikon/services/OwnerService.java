@@ -4,6 +4,9 @@ import com.team04.technikon.dto.PropertyDto;
 import com.team04.technikon.dto.PropertyOwnerDto;
 import com.team04.technikon.dto.RepairDto;
 import com.team04.technikon.dto.RestApiResult;
+import com.team04.technikon.enums.PropertyType;
+import com.team04.technikon.enums.RepairStatus;
+import com.team04.technikon.enums.RepairType;
 import com.team04.technikon.exceptions.PropertyException;
 import com.team04.technikon.model.Property;
 import com.team04.technikon.model.PropertyOwner;
@@ -102,7 +105,17 @@ public interface OwnerService {
 
     RestApiResult<PropertyOwnerDto> getOwnerByEmail(String email);
 
+     List<PropertyOwnerDto> getAllOwners();
+
+    List<PropertyDto> getAllProperties();
+
+    List<RepairDto> getAllRepairs();
+
     RestApiResult<PropertyDto> getProperty(int propertyId);
+
+    PropertyDto getPropertyByE9(int e9);
+
+    List<PropertyDto> getPropertiesByOwnerVat(int vat);
 
     RestApiResult<RepairDto> getRepair(int repairId);
 
@@ -114,8 +127,58 @@ public interface OwnerService {
 
     RestApiResult<PropertyOwnerDto> updateOwner(PropertyOwnerDto propertyOwnerDto, int id);
 
+    PropertyOwnerDto updateAddress(int id, String newAddress);
+
+    PropertyOwnerDto updateEmail(int id, String email);
+
+    PropertyOwnerDto updateName(int id, String name);
+
+    PropertyOwnerDto updateSurname(int id, String surname);
+
+    PropertyOwnerDto updatePassword(int id, String password);
+
+    PropertyOwnerDto updatePhoneNumber(int id, String phoneNumber);
+
+    PropertyOwnerDto updateUsername(int id, String username);
+
+    PropertyOwnerDto updateVat(int id, int vat);
+
     RestApiResult<PropertyDto> updateProperty(PropertyDto propertyDto, int id);
 
+    PropertyDto updatePropertyAddress(int propertyId, String address);
+
+    PropertyDto updateYearOfConstruction(int propertyId, String yearOfConstruction);
+
+    PropertyDto updatePropertyType(int propertyId, PropertyType propertyType);
+
     RestApiResult<RepairDto> updateRepair(RepairDto repairDto, int id);
+
+    List<RepairDto> getRepairsBySubmissionDate(String submissionDate);
+
+    List<RepairDto> getRepairsOfOwner(int id);
+
+    RepairDto updateRepairType(int id, RepairType repairType);
+
+    RepairDto updateRepairDescription(int id, String repairDescription);
+
+    RepairDto updateSubmissionDate(int id, String submissionDate);
+
+    RepairDto updateWorkDescription(int id, String workDescription);
+
+    RepairDto updateStartDate(int id, String startDate);
+
+    RepairDto updateEndDate(int id, String endDate);
+
+    RepairDto updateCost(int id, double cost);
+
+    RepairDto updateAcceptance(int id, boolean acceptance);
+
+    RepairDto updateRepairStatus(int id, RepairStatus repairStatus);
+
+    RepairDto updateActualStartDate(int id, String actualStartDate);
+
+    RepairDto updateActualEndDate(int id, String actualEndDate);
+
+    PropertyOwnerDto getUser(String authorization);
 
 }

@@ -9,7 +9,7 @@ public interface PropertyOwnerRepository extends Repository<PropertyOwner> {
     PropertyOwner search(int id);
 
     PropertyOwner search(String email);
-    
+
     PropertyOwner findById(int id);
 
     PropertyOwner findByVat(int vat);
@@ -29,7 +29,15 @@ public interface PropertyOwnerRepository extends Repository<PropertyOwner> {
     List<PropertyOwner> readAll();
 
     void createPropertyOwner(PropertyOwner propertyOwner);
-  
+
     boolean deleteOwner(int id);
+
+    List<PropertyOwner> findAll();
+
+    List<PropertyOwner> findUsernames(String username);
+
+    PropertyOwner findByUNameAndPassword(String username, String password);
+
+    String checkRole(String username, String password);
 
 }
